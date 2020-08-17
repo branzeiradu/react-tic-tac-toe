@@ -14,6 +14,7 @@ class Game extends React.Component {
       ],
       stepNr: 0,
       xIsNext: true,
+      isAscending: true
 
     };
     console.log("(Game) Initial state: ");
@@ -29,6 +30,12 @@ class Game extends React.Component {
 
   getPlayer() {
     return (this.state.xIsNext ? "X" : "O");
+  }
+
+  handleListOrderToggle() {
+    this.setState({
+      isAscending: !this.state.isAscending
+    });
   }
 
 
@@ -65,7 +72,7 @@ class Game extends React.Component {
     const current = history[this.state.stepNr];
     const winner = calculateWinner(current.squares);
     const selectedMove = this.state.stepNr;
-    let boardClickHandler = (i) => this.handleSquareClick(i) ;
+    let boardClickHandler = (i) => this.handleSquareClick(i);
 
     if ((selectedMove != history.length - 1)) {
       boardClickHandler = null;//dont permit change of game after its finished
@@ -87,6 +94,12 @@ class Game extends React.Component {
       );
     });
 
+
+
+    const isAscending = this.state.isAscending;
+    if (!isAscending) {
+      moves.reverse();
+    }
 
     let status = null, winning_line = null;
     if (winner) {
@@ -115,6 +128,7 @@ class Game extends React.Component {
         />
         <div className="game-info">
           <div className="game-player">{status}</div>
+          <button onClick={() => this.handleListOrderToggle()}>{isAscending ? 'descending' : 'ascending'}</button>
           <ul className="game-move-list">{moves}</ul>
         </div>
       </div>
@@ -139,7 +153,7 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     w = i;
     const [a, b, c] = lines[i];
-    
+
     const found = squares[a]
       && squares[a] === squares[b]
       && squares[a] === squares[c];
