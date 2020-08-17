@@ -1,9 +1,22 @@
 class Board extends React.Component {
 
   renderSquare(i) {
-    console.log("square " + i);
+    console.log("render square " + i);
+
+    let boardClickhandler = null;
+    if (this.props.clickHandler) {
+      boardClickhandler = () => { this.props.clickHandler(i) };
+    }
+
+    const squares = this.props.winning_squares;
+    const hasWinningSquares = !!squares;
+    const isHighlighted = hasWinningSquares && squares.includes(i);
+
+
     return (
       <Square
+        key={i}
+        highlighted={isHighlighted}
         value={this.props.squares[i]}
         onClickHandler={
           () => { this.props.clickHandler(i); }
@@ -20,27 +33,26 @@ class Board extends React.Component {
 
   render() {
 
+    const boardSize = 3;
+    let squares = [];
+    for (let i = 0; i < boardSize; ++i) {
+      let row = [];
+      for (let j = 0; j < boardSize; ++j) {
+        let square = this.renderSquare(i * boardSize + j);
+        row.push(square);
+      }
+      console.log("new_row:" + row);
+      console.log(row);
+      squares.push(<div key={i} className="board-row">{row}</div>);
+    }
+
+
 
     return (
-      <div className="game-board" >
-        <div className="status">{status}</div>
-        <div className="board-row">
-          {this.renderSquare(0)}
-          {this.renderSquare(1)}
-          {this.renderSquare(2)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(3)}
-          {this.renderSquare(4)}
-          {this.renderSquare(5)}
-        </div>
-        <div className="board-row">
-          {this.renderSquare(6)}
-          {this.renderSquare(7)}
-          {this.renderSquare(8)}
-        </div>
 
-      </div>
+
+
+      <div className="game-board" >{squares}</div>
     );
   }
 }

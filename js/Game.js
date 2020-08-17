@@ -4,14 +4,20 @@ class Game extends React.Component {
     this.state = {
       history: [
         {
-          squares: Array(9).fill(null)
+          squares: Array(9).fill(null),
+          squareClicked: {
+            col: null,
+            row: null,
+            index: null
+          }
         }
       ],
       stepNr: 0,
       xIsNext: true,
 
     };
-
+    console.log("(Game) Initial state: ");
+    console.log(this.state);
   }
 
   jumpTo(step) {
@@ -29,8 +35,11 @@ class Game extends React.Component {
 
   handleSquareClick(i) {
 
+    const squareCoord = { col: Math.floor(i / 3), row: i % 3, index: i };
     const history = this.state.history.slice(0, this.state.stepNr + 1);
     const current = history[history.length - 1];
+
+
     const squares = current.squares.slice();
     if (calculateWinner(squares) || squares[i]) {
       return;
@@ -39,7 +48,9 @@ class Game extends React.Component {
     this.setState({
       history: history.concat([
         {
-          squares: squares
+          squares: squares,
+          squareClicked: squareCoord
+
         }
       ]),
       stepNr: history.length,
@@ -53,22 +64,41 @@ class Game extends React.Component {
     const history = this.state.history;
     const current = history[this.state.stepNr];
     const winner = calculateWinner(current.squares);
+    const selectedMove = this.state.stepNr;
+    let boardClickHandler = (i) => this.handleSquareClick(i) ;
+
+    if ((selectedMove != history.length - 1)) {
+      boardClickHandler = null;//dont permit change of game after its finished
+    }
 
     const moves = history.map((step, move) => {
-      const description = move ? "Go to move #" + move : "Go to game start";
+      const currentSquare = step.squareClicked
+      const goToStart = "Go to game start";
+      const goToMove = "Move #" + move + " at " + "(" + (currentSquare.col + 1) + "," + (currentSquare.row + 1) + ")";
+
+      const description = move ? goToMove : goToStart;
+      const isSelected = (move == selectedMove) ? "game-state-item game-state" : "game-state-item";
+
+
       return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{description}</button>
+        <li key={move} className={isSelected}>
+          <button selected="{isSelected}" onClick={() => this.jumpTo(move)}>{description}</button>
         </li>
       );
     });
 
 
-    let status;
+    let status = null, winning_line = null;
     if (winner) {
-      status = 'Winner: ' + winner;
+      status = 'Winner: ' + winner.player;
+      winning_line = winner.line;
     } else {
-      status = 'Next player: ' + this.getPlayer();
+      if (history.length - 1 === current.squares.length) {
+        boardClickHandler = null;
+        status = "Draw!"
+      } else {
+        status = 'Next player: ' + this.getPlayer();
+      }
     }
 
 
@@ -76,10 +106,16 @@ class Game extends React.Component {
 
     return (
       <div className="game">
-        <Board squares={current.squares} clickHandler={(i) => this.handleSquareClick(i)} />
+        <Board
+
+          winning_squares={winning_line}
+          squares={current.squares}
+          clickHandler={boardClickHandler}
+
+        />
         <div className="game-info">
-          <div>{status}</div>
-          <ol>{moves}</ol>
+          <div className="game-player">{status}</div>
+          <ul className="game-move-list">{moves}</ul>
         </div>
       </div>
     );
@@ -98,11 +134,26 @@ function calculateWinner(squares) {
     [0, 4, 8],
     [2, 4, 6],
   ];
+
+  var w = -1;
   for (let i = 0; i < lines.length; i++) {
+    w = i;
     const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
+    
+    const found = squares[a]
+      && squares[a] === squares[b]
+      && squares[a] === squares[c];
+
+    if (found) {
+      return {
+        player: squares[a],
+        line: lines[i].slice()
+      };
     }
+
   }
+
+
+
   return null;
 }

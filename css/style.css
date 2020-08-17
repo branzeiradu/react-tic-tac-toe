@@ -3,9 +3,9 @@ body {
     margin: 20px;
   }
   
-  .game-info ol,
-  .game-info ul {
-    padding-left: 30px;
+  .game-move-list{
+    padding-left: 0.5em;
+    list-style-type: none;
   }
   
   .board-row:after {
@@ -14,8 +14,9 @@ body {
     display: table;
   }
   
-  .status {
-    margin-bottom: 10px;
+  .game-status {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
   }
   
   .square {
@@ -32,7 +33,9 @@ body {
     text-align: center;
     width: 34px;
   }
-  
+  .square_highlighted{
+    color: red;
+  }
   .square:focus {
     outline: none;
   }
@@ -44,9 +47,27 @@ body {
   .game {
     display: flex;
     flex-direction: row;
+    margin-top: 0.5rem;;
   }
   
-  .game-info {
+  .game-player{
+   /*margin-top: 0.5rem;*/ 
+  }
+
+.game-info {
     margin-left: 20px;
   }
+ 
+.game-state-item{
+  margin-top: 0.5rem;
+}
+
+.game-state,
+.game-state button{
+  font-weight: bold;
+}
   
+
+.game-state:after{
+  content: " ";
+}
