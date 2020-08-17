@@ -10,10 +10,11 @@ class Square extends React.Component {
     if(isHighlighted){
       sqrClsName+=" square_highlighted";
     }
+    const handler = this.props.onClickHandler;
 
     return (
       <button
-        className={ sqrClsName } onClick={this.props.onClickHandler}>
+        className={ sqrClsName } onClick={ !!handler ? handler : undefined }>
         {this.props.value}
       </button>
     );

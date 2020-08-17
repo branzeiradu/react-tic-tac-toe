@@ -17,8 +17,8 @@ class Game extends React.Component {
       isAscending: true
 
     };
-    console.log("(Game) Initial state: ");
-    console.log(this.state);
+    //console.log("(Game) Initial state: ");
+    //console.log(this.state);
   }
 
   jumpTo(step) {

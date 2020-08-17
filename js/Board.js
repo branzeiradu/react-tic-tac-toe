@@ -1,7 +1,7 @@
 class Board extends React.Component {
 
   renderSquare(i) {
-    console.log("render square " + i);
+    //console.log("render square " + i);
 
     let boardClickhandler = null;
     if (this.props.clickHandler) {
@@ -18,9 +18,7 @@ class Board extends React.Component {
         key={i}
         highlighted={isHighlighted}
         value={this.props.squares[i]}
-        onClickHandler={
-          () => { this.props.clickHandler(i); }
-        }
+        onClickHandler={boardClickhandler}
       />
     );
   }
@@ -41,8 +39,8 @@ class Board extends React.Component {
         let square = this.renderSquare(i * boardSize + j);
         row.push(square);
       }
-      console.log("new_row:" + row);
-      console.log(row);
+      //console.log("new_row:" + row);
+      //console.log(row);
       squares.push(<div key={i} className="board-row">{row}</div>);
     }
 
